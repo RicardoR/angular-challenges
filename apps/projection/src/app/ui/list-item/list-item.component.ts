@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-list-item',
@@ -9,6 +9,7 @@ import { Component, Input } from '@angular/core';
     </div>
   `,
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class ListItemComponent {
   @Input() name!: string;

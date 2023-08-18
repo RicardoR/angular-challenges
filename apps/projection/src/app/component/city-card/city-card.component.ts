@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgFor } from '@angular/common';
-import { City } from '../../model/city.model';
+import { AsyncPipe } from '@angular/common';
 import {
   FakeHttpService,
   randomCity,
@@ -13,16 +12,15 @@ import { ListItemComponent } from '../../ui/list-item/list-item.component';
   selector: 'app-city-card',
   templateUrl: './city-card.component.html',
   standalone: true,
-  imports: [CardComponent, ListItemComponent, NgFor],
+  imports: [CardComponent, ListItemComponent, AsyncPipe],
 })
 export class CityCardComponent implements OnInit {
-  cities: City[] = [];
+  cities$ = this.store.city$;
 
   constructor(private http: FakeHttpService, private store: CityStore) {}
 
   ngOnInit(): void {
     this.http.fetchCities$.subscribe((c) => this.store.addAll(c));
-    this.store.city$.subscribe((c) => (this.cities = c));
   }
 
   deleteCity(id: number): void {

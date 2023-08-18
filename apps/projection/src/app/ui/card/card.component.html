@@ -1,5 +1,14 @@
-<ng-content select="[img]"></ng-content>
+<ng-content select="img" />
 <section>
-  <ng-content select="[app-list-item]"></ng-content>
+  <ng-container *ngFor="let item of list">
+      <ng-template
+        [ngTemplateOutletContext]="{ $implicit: item }"
+        [ngTemplateOutlet]="rowTemplate || defaultTemplate"
+      />
+  </ng-container>
 </section>
-<ng-content select="[button]"></ng-content>
+<ng-content select="button" />
+
+<ng-template #defaultTemplate let-item>
+  <div>{{ item.name }}</div>
+</ng-template>

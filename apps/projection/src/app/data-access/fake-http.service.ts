@@ -20,6 +20,7 @@ export const randTeacher = () => ({
   id: factoryTeacher(),
   firstname: randFirstName(),
   lastname: randLastName(),
+  name: `${randFirstName()} - ${randLastName()}`,
   subject: rand(subject),
 });
 
