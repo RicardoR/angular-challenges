@@ -2,26 +2,41 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ListComponent } from './list.component';
 import { PersonComponent } from './person.component';
+import { PersonTypeDirective } from './directives/person.type.directive';
+import { ListTypeDirective } from './directives/list.type.directive';
 
 @Component({
   standalone: true,
-  imports: [NgTemplateOutlet, PersonComponent, ListComponent],
+  imports: [
+    NgTemplateOutlet,
+    PersonComponent,
+    ListComponent,
+    PersonTypeDirective,
+    ListTypeDirective,
+  ],
   selector: 'app-root',
   template: `
+    <p>
+      <a
+        href="https://medium.com/@thomas.laforge/ngtemplateoutlet-type-checking-5d2dcb07a2c6"
+        target="_blank">
+        Ver la explicación</a
+      >
+    </p>
     <person [person]="person">
-      <ng-template #personRef let-name let-age="age">
+      <ng-template person let-name let-age="age">
         {{ name }}: {{ age }}
       </ng-template>
     </person>
 
     <list [list]="students">
-      <ng-template #listRef let-student let-i="index">
+      <ng-template [appList]="students" let-student let-i="index">
         {{ student.name }}: {{ student.age }} - {{ i }}
       </ng-template>
     </list>
 
     <list [list]="cities">
-      <ng-template #listRef let-city let-i="index">
+      <ng-template [appList]="cities" let-list let-city let-i="index">
         {{ city.name }}: {{ city.country }} - {{ i }}
       </ng-template>
     </list>
