@@ -1,5 +1,6 @@
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { LoaderService } from './loader.service';
+import { Observable } from 'rxjs';
 
 describe('LoaderService', () => {
   let service: LoaderService;
@@ -15,7 +16,7 @@ describe('LoaderService', () => {
 
   it('getLoadingStatus should return the isLoading obs', () => {
     const isLoading = service.getLoadingStatus();
-    expect(isLoading).toBeDefined();
+    expect(isLoading instanceof Observable).toBeTruthy();
   });
 
   it('should emit true when show is called', fakeAsync(() => {

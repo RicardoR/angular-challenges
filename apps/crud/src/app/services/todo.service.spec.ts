@@ -8,6 +8,12 @@ import { Todo } from '../interfaces/todo.interface';
 import { TodoService } from './todo.service';
 
 const TODO_BASE_URL = 'https://jsonplaceholder.typicode.com/todos';
+const todo: Todo = {
+  userId: 4,
+  id: 5,
+  completed: false,
+  title: 'The super todo',
+};
 
 describe('TodoService', () => {
   let service: TodoService;
@@ -37,12 +43,6 @@ describe('TodoService', () => {
   });
 
   it('should be able to update a todo', () => {
-    const todo: Todo = {
-      userId: 4,
-      id: 5,
-      completed: false,
-      title: 'The super todo',
-    };
     service.updateTodo(todo);
     const req = httpMock.expectOne(`${TODO_BASE_URL}/${todo.id}`);
 
@@ -50,12 +50,6 @@ describe('TodoService', () => {
   });
 
   it('should be able to delete a todo', () => {
-    const todo: Todo = {
-      userId: 4,
-      id: 5,
-      completed: false,
-      title: 'The super todo',
-    };
     service.deleteTodo(todo);
     const req = httpMock.expectOne(`${TODO_BASE_URL}/${todo.id}`);
 
