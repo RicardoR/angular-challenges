@@ -33,14 +33,21 @@ export class TodoService {
         this.todoToString(todo),
         HEADERS
       )
-      .pipe(
-        map((todoUpdated: Todo) => {
-          return this.todoList.value.map((todo: Todo) => {
-            return todo.id === todoUpdated.id ? todoUpdated : todo;
-          });
-        })
-      )
+      .pipe(map((todoUpdated: Todo) => this.mapTodos(todoUpdated)))
       .subscribe((todos: Todo[]) => this.todoList.next([...todos]));
+  }
+
+  deleteTodo(todo: Todo): void {
+    this.http
+      .delete<Todo>(`${TODO_BASE_URL}/${todo.id}`)
+      .pipe(map(() => this.todoList.value.filter((t) => t.id != todo.id)))
+      .subscribe((data: Todo[]) => this.todoList.next([...data]));
+  }
+
+  private mapTodos(todoUpdated: Todo): Todo[] {
+    return this.todoList.value.map((todo: Todo) => {
+      return todo.id === todoUpdated.id ? todoUpdated : todo;
+    });
   }
 
   private todoToString(todo: Todo): string {

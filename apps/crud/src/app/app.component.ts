@@ -5,19 +5,22 @@ import {
   OnInit,
   inject,
 } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Todo } from './interfaces/todo.interface';
 import { TodoService } from './services/todo.service';
-import { Observable } from 'rxjs';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @Component({
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoaderComponent],
   selector: 'app-root',
   template: `
+    <app-loader></app-loader>
     <div *ngIf="todoList$ | async as todos">
       <div *ngFor="let todo of todos">
         {{ todo.title }}
         <button (click)="update(todo)">Update</button>
+        <button (click)="delete(todo)">Delete</button>
       </div>
     </div>
   `,
@@ -37,5 +40,9 @@ export class AppComponent implements OnInit {
 
   update(todo: Todo): void {
     this.todoService.updateTodo(todo);
+  }
+
+  delete(todo: Todo): void {
+    this.todoService.deleteTodo(todo);
   }
 }
