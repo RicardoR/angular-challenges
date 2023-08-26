@@ -10,13 +10,15 @@ import {
 } from '@angular/core';
 import { Role } from './user.model';
 import { UserStore } from './user.store';
+import { Subject, takeUntil } from 'rxjs';
 
 @Directive({
   selector: '[hasRole], [hasRoleIsAdmin]',
   standalone: true,
-  providers: [provideDestroyService()],
 })
 export class HasRoleDirective implements OnInit, OnDestroy {
+  private onDestroy$ = new Subject<void>();
+
   @Input('hasRole') role: Role | Role[] | undefined = undefined;
 
   @Input('hasRoleIsAdmin') isAdmin = false;
@@ -31,36 +33,35 @@ export class HasRoleDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnDestroy(): void {
-    console.log('on destroy');
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   ngOnInit(): void {
-    console.log(this.role, this.isAdmin, this.elseTemplate);
     if (this.isAdmin) {
-      this.store.isAdmin$.subscribe((isAdmin) => {
-        console.log(isAdmin);
-        isAdmin ? this.addTemplate() : this.addElseTemplate();
-      });
+      this.store.isAdmin$
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe((isAdmin) =>
+          isAdmin ? this.addTemplate() : this.addElseTemplate()
+        );
+    } else if (this.role) {
+      this.store
+        .hasAnyRole(this.role)
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe((hasPermission) => {
+          hasPermission ? this.addTemplate() : this.addElseTemplate();
+        });
+    } else {
+      this.addTemplate();
     }
-    // else if (this.role) {
-    //   this.store
-    //     .hasAnyRole(this.role)
-    //     .subscribe((hasPermission) =>
-    //       hasPermission ? this.addTemplate() : this.addElseTemplate()
-    //     );
-    // } else {
-    //   this.addTemplate();
-    // }
   }
 
   private addTemplate() {
-    console.log('Add');
     this.viewContainer.clear();
     this.viewContainer.createEmbeddedView(this.templateRef);
   }
 
   private addElseTemplate() {
-    console.log('ici');
     this.viewContainer.clear();
     this.elseTemplate &&
       this.viewContainer.createEmbeddedView(this.elseTemplate);
