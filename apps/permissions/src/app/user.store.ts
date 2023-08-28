@@ -27,4 +27,8 @@ export class UserStore {
       })
     );
   }
+
+  hasPermission(role: Role): Observable<boolean | undefined> {
+    return this.hasAnyRole(role);
+  }
 }
