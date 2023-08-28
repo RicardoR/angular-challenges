@@ -1,9 +1,14 @@
-import { ManagerDashboardComponent } from './dashboard/manager.component';
-import { manager } from './user.model';
-import { inject } from '@angular/core';
-import { UserStore } from './user.store';
-
-export const APP_ROUTES = [
+import { Route } from '@angular/router';
+import { hasRole, isAdmin } from './dashboard.guards';
+import { Role } from './user.model';
+interface TypedRoute extends Route {
+  data?: {
+    isAdmin?: boolean;
+    roles?: Role[];
+  };
+  loadComponent?: any;
+}
+export const APP_ROUTES: TypedRoute[] = [
   {
     path: '',
     loadComponent: () =>
@@ -11,25 +16,30 @@ export const APP_ROUTES = [
   },
   {
     path: 'enter',
-    canMatch: [() => inject(UserStore).hasAnyRole('ADMIN')],
-    loadComponent: () =>
-      import('./dashboard/admin.component').then(
-        (m) => m.AdminDashboardComponent
-      ),
+    canMatch: [() => isAdmin()],
+    loadComponent: () => import('./dashboard/admin.component'),
   },
   {
     path: 'enter',
-    canMatch: [() => inject(UserStore).hasPermission('MANAGER')],
-    loadComponent: () =>
-      import('./dashboard/manager.component').then(
-        (m) => m.ManagerDashboardComponent
-      ),
+    canMatch: [() => hasRole(['MANAGER'])],
+    loadComponent: () => import('./dashboard/manager.component'),
   },
   {
     path: 'enter',
-    loadComponent: () =>
-      import('./dashboard/user.component').then(
-        (m) => m.UserDashboardComponent
-      ),
+    canMatch: [() => hasRole(['WRITER', 'READER'])],
+    loadComponent: () => import('./dashboard/writer-reader.component'),
+  },
+  {
+    path: 'enter',
+    canMatch: [() => hasRole(['CLIENT'])],
+    loadComponent: () => import('./dashboard/client.component'),
+  },
+  {
+    path: 'enter',
+    loadComponent: () => import('./dashboard/everyone.component'),
+  },
+  {
+    path: 'no-user',
+    loadComponent: () => import('./dashboard/no-user.component'),
   },
 ];

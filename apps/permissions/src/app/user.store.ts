@@ -8,13 +8,16 @@ import { Role, User } from './user.model';
 export class UserStore {
   private user = new BehaviorSubject<User | undefined>(undefined);
   private isAdmin = new BehaviorSubject<boolean>(false);
+  private isUserLoggedIn = new BehaviorSubject<boolean>(false);
 
   user$ = this.user.asObservable();
   isAdmin$ = this.isAdmin.asObservable();
+  isUserLoggedIn$ = this.isUserLoggedIn.asObservable();
 
   add(user: User): void {
     this.user.next(user);
     this.isAdmin.next(user.isAdmin);
+    this.isUserLoggedIn.next(true);
   }
 
   hasAnyRole(role: Role | Role[]): Observable<boolean | undefined> {
