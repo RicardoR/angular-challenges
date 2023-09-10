@@ -1,4 +1,3 @@
-import { tapResponse } from '@ngrx/component-store';
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
