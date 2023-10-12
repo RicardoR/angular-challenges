@@ -1,25 +1,27 @@
-import { NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-
-interface Person {
-  name: string;
-}
+import { Component } from '@angular/core';
+import { NgForEmpty } from './ngForEmptyDirective.directive';
 
 @Component({
   standalone: true,
-  imports: [NgFor, NgIf],
+  imports: [NgForEmpty], // no need to import ngFor
   selector: 'app-root',
   template: `
-    <ng-container *ngIf="persons.length > 0; else emptyList">
-      <div *ngFor="let person of persons">
-        {{ person.name }}
-      </div>
-    </ng-container>
-    <ng-template #emptyList>The list is empty !!</ng-template>
+    <div *ngForEmpty="let person of persons; else: empty">
+      {{ person }}
+    </div>
+    <ng-template #empty>The list is empty !!</ng-template>
+    <button (click)="clear()">Clear</button>
+    <button (click)="add()">Add</button>
   `,
-  styles: [],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  persons: Person[] = [];
+  persons?: string[] = undefined;
+
+  clear() {
+    this.persons = [];
+  }
+  add() {
+    if (!this.persons) this.persons = [];
+    this.persons?.push('tutu');
+  }
 }
